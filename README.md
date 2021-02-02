@@ -2,33 +2,188 @@
 Docker image that combines qBittorrent and Private Internet Acces (PIA) with port forwarding.
 
 ## Brief descritpion
-This is a simple project. It basically combines the [manual scritps](https://www.privateinternetaccess.com/helpdesk/kb/articles/manual-connection-and-port-forwarding-scripts) ellaborated by PIA and published on [GitHub](https://github.com/pia-foss/manual-connections), with the Ubuntu 20.04 Docker image and the latest available stable qBittorrent release. **For this to work you need an actvie PIA subscription**.
+This is a simple project. It basically combines the [manual scritps](https://www.privateinternetaccess.com/helpdesk/kb/articles/manual-connection-and-port-forwarding-scripts) ellaborated by PIA and published to [GitHub](https://github.com/pia-foss/manual-connections), with the Ubuntu 20.04 Docker image and the latest available stable qBittorrent release. **For this to work you need an actvie PIA subscription**.
 
 ## Tested environments
-As of now, I've tested this set up on my Windows machine with Docker running on WSL2. It works, yet **only with OpenVPN**. It seems that Wireguard is not supported by the kernel used here. It sais "unsupported protocol".
-I'm trying to make it work for the Container Station of my QNAS server. As soon as I make some progress, I'll post it on here.
+As of this commit, I've tested this set up on my Windows 10 machine with Docker running on WSL2. It works, yet **only with OpenVPN**. It seems that Wireguard protocol is not supported by the kernel used here.
+
+I'm also trying to make it work for the Container Station of my QNAS server. I hope I can get something running sometime soon!
+
+I guess if used in a true Linux host, wireguard will most probably work. I'll make an update on this, too.
 
 ## Versions of elements used in the image
 + manual-connections: [v2.0.0](https://github.com/pia-foss/manual-connections/releases/tag/v2.0.0)
 + qBittorrent: latest available version on [qbittorrent-stable repository](https://launchpad.net/~qbittorrent-team/+archive/ubuntu/qbittorrent-stable)
 
 ## What's different from the original manual-connections release?
-In order to make the port forwarding functionality to work, I had to modify the [port_forwarding.sh](scripts/port_forwarding.sh) script by setting the `Connection\PortRangeMin` value of the [qBittorrent.conf](qBittorrent.conf) file to the obtained port and creating a deamon of qBittorrent on the desired port.
+In order to use the forwarded port within qBittorrent, I had to modify the [port_forwarding.sh](scripts/port_forwarding.sh) script by setting it to the `Connection\PortRangeMin` entry of the [qBittorrent.conf](qBittorrent.conf) file. Since the port forwarding functionality requires a regular call to the API, I couldn't just launch the script in the background.
 
-## Customizing global variables in the docker-compose.yml file
-You need to set your credentials in the docker-compose.yml file beforehand. You can also change few of the default configurations of the PIA scripts. Check the README on their git so you know how everything works.
+This is the code extract I added:
+```bash
+echo "
+#####################################################################
+#####################################################################
+#####################################################################
+#####################################################################
+
+Launching and configuring qBittorrent with the obtained port..."
+
+# Getting the previous port set up in the configuration file
+previousPort|$(cat /root/.config/qBittorrent/qBittorrent.conf | grep 'Connection\\PortRangeMin')
+echo "The previous port was ${previousPort#*|}"
+
+# Replacing the port in the config file with the newly obtained port
+sed -i -E 's,(Connection\\PortRangeMin|).*,\1'"$port"',g' /root/.config/qBittorrent/qBittorrent.conf
+
+# Checking that the port has been successfully updated
+newPort|$(cat /root/.config/qBittorrent/qBittorrent.conf | grep 'Connection\\PortRangeMin')
+echo "
+The current port is ${newPort#*|}
+
+Starting qBittorrent on port $WEBUI_PORT..."
+
+# Launching qBittorrent
+qbittorrent-nox --webui-port|$WEBUI_PORT -d
+
+echo "
+
+qBittorrent should be now accessible through http://localhost:$WEBUI_PORT
+
+#####################################################################
+#####################################################################
+#####################################################################
+#####################################################################
+```
+
+## Before you deploy
+You need to set your credentials in the docker-compose.yml file (PIA_USER and PIA_PASS).
+
+If you want, you can also change some of the connection behavior through these variables (copied and summarized from [here](https://github.com/pia-foss/manual-connections#automated-setup)):
+
+|Variable|Values|Ussage|
+|----|----|----|
+|PIA_DNS|`true` or `false`|Enforces/Disables using PIA DNS addresses.|
+|PIA_PF|`true` or `false`|Enables/Disables port forwarding|
+|MAX_LATENCY|`float`, in seconds, e.g.: 0.05|Max latency to consider when choosing VPN destination automatically.|
+|AUTOCONNECT|`true` or `false`|If set to true, it "will test for and select the server with the lowest latency" and "will override PREFERRED_REGION".|
+|PREFERRED_REGION|(see next section) e.g.: Spain|"The region ID for a PIA server."|
+|VPN_PROTOCOL|`wireguard`, `openvpn`, `openvpn_udp_standard`, `openvpn_tcp/udp_standad/strong`|Desired VPN protocol to be used. "openvpn will default to openvpn_udp_standard"|
+|DISABLE_IPV6|`yes` or `no`|Disables/Enables IPv6 connectivity. Either PIA or OpenVPN disencourages the usage of IPv6 to prevent DNS leaking.|
+|WEBUI_PORT|`int`, e.g.: 8888|The port from wich you will access qBittorrent via browser. **IMPORTANT**: If you change this value, you must not forget to change the port mapping on the YML file, as well.|
+
+### Available locations
+You can run the `get_region.sh` script to find the latencies of every possible location.
+These are a few of your possibilities:
++ Albania
++ Algeria (geo)
++ Andorra (geo)
++ Argentina
++ Armenia (geo)
++ AU Melbourne
++ AU Perth
++ AU Sydney
++ Austria
++ Bahamas (geo)
++ Bangladesh (geo)
++ Belgium
++ Bosnia and Herzegovina
++ Brazil (geo)
++ Bulgaria
++ CA Montreal
++ CA Ontario
++ CA Toronto
++ CA Vancouver
++ Cambodia (geo)
++ China (geo)
++ Cyprus (geo)
++ Czech Republic
++ DE Berlin
++ DE Frankfurt
++ Denmark
++ Egypt (geo)
++ Estonia
++ Finland
++ France
++ Georgia (geo)
++ Greece
++ Greenland (geo)
++ Hong Kong (geo)
++ Hungary
++ Iceland
++ India
++ Ireland
++ Isle of Man (geo)
++ Israel
++ Italy
++ Japan
++ Kazakhstan (geo)
++ Latvia
++ Liechtenstein (geo)
++ Lithuania
++ Luxembourg
++ Macao (geo)
++ Macedonia
++ Malta (geo)
++ Mexico (geo)
++ Moldova
++ Monaco (geo)
++ Mongolia (geo)
++ Montenegro (geo)
++ Morocco (geo)
++ Netherlands
++ New Zealand
++ Nigeria
++ Norway
++ Panama (geo)
++ Philippines (geo)
++ Poland
++ Portugal
++ Qatar (geo)
++ Romania
++ Saudi Arabia (geo)
++ Serbia
++ Singapore
++ Slovakia
++ South Africa
++ Spain
++ Sri Lanka (geo)
++ Sweden
++ Switzerland
++ Taiwan
++ Turkey (geo)
++ UK London
++ UK London - Streaming Optimized
++ UK Manchester
++ UK Southampton
++ Ukraine
++ United Arab Emirates (geo)
++ US Atlanta
++ US California
++ US Chicago
++ US Denver
++ US East
++ US Florida
++ US Houston
++ US Las Vegas
++ US New York
++ US Seattle
++ US Silicon Valley
++ US Texas
++ US Washington DC
++ US West
++ Venezuela (geo)
++ Vietnam (geo)
+
+Regions marked with (geo) are geo-located. Some of these regions may not available if PIA_PF is set to true.
 
 ## How to deploy
-
-### Windows 10 and docker running on WSL
+The image resulting of the Dockerfile in this repo has been published to Docker Hub. There's no need to build the image first.
 Clone the repo and modify the compose file with your credentials and according to your preferences.
 Then, simply run `docker-compose up -d`. To remove the app: `docker-compose down`.
 
 ## How to build and deploy
 
-### Windows 10 and docker running on WSL
-If you don't want to clone the existing image on docker-hub, you can also build the image yourself on your computer.
-To do so, you must change the following lines:
+If you would rather build the image yourself you simply need to change:
 ```YML
 image: javiruizs/qbittorentpia
 ```
@@ -38,5 +193,6 @@ build:
     context: .
     dockerfile: Dockerfile
 ```
+...in the [docker-compose.yml](docker-compose.yml) file.
 
-Then, you can copy and paste: `docker-compose build && docker-compose up -d`
+Then, you can run: `docker-compose build && docker-compose up -d`
