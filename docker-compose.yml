@@ -11,7 +11,7 @@ services:
       - NET_ADMIN
       - SYS_MODULE
     volumes:
-      - host_volume:guest_volume
+      - <your_host_dir>:/share/Download
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     environment:
@@ -20,9 +20,9 @@ services:
       - PIA_DNS=true
       - PIA_PF=true
       #- MAX_LATENCY=0.05
-      - AUTOCONNECT=true
-      #- PREFERRED_REGION=Spain
-      - VPN_PROTOCOL=openvpn_udp_standard
+      #- AUTOCONNECT=true
+      - PREFERRED_REGION=Spain
+      - VPN_PROTOCOL=openvpn
       - DISABLE_IPV6=yes
       - WEBUI_PORT=8888
     restart: unless-stopped

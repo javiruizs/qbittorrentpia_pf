@@ -66,115 +66,10 @@ If you want, you can also change some of the connection behavior through these v
 |PIA_PF|`true` or `false`|Enables/Disables port forwarding|
 |MAX_LATENCY|`float`, in seconds, e.g.: 0.05|Max latency to consider when choosing VPN destination automatically.|
 |AUTOCONNECT|`true` or `false`|If set to true, it "will test for and select the server with the lowest latency" and "will override PREFERRED_REGION".|
-|PREFERRED_REGION|(see next section) e.g.: Spain|"The region ID for a PIA server."|
+|PREFERRED_REGION|e.g.: Spain|"The region ID for a PIA server." To get a complete list of the available regions, execute the `sudo MAX_LATENCY=10 ./get_region.sh` and you'll get the whole list.|
 |VPN_PROTOCOL|`wireguard`, `openvpn`, `openvpn_udp_standard`, `openvpn_tcp/udp_standad/strong`|Desired VPN protocol to be used. "openvpn will default to openvpn_udp_standard"|
 |DISABLE_IPV6|`yes` or `no`|Disables/Enables IPv6 connectivity. Either PIA or OpenVPN disencourages the usage of IPv6 to prevent DNS leaking.|
 |WEBUI_PORT|`int`, e.g.: 8888|The port from wich you will access qBittorrent via browser. **IMPORTANT**: If you change this value, you must not forget to change the port mapping on the YML file, as well.|
-
-### Available locations
-You can run the `get_region.sh` script to find the latencies of every possible location.
-These are a few of your possibilities:
-+ Albania
-+ Algeria (geo)
-+ Andorra (geo)
-+ Argentina
-+ Armenia (geo)
-+ AU Melbourne
-+ AU Perth
-+ AU Sydney
-+ Austria
-+ Bahamas (geo)
-+ Bangladesh (geo)
-+ Belgium
-+ Bosnia and Herzegovina
-+ Brazil (geo)
-+ Bulgaria
-+ CA Montreal
-+ CA Ontario
-+ CA Toronto
-+ CA Vancouver
-+ Cambodia (geo)
-+ China (geo)
-+ Cyprus (geo)
-+ Czech Republic
-+ DE Berlin
-+ DE Frankfurt
-+ Denmark
-+ Egypt (geo)
-+ Estonia
-+ Finland
-+ France
-+ Georgia (geo)
-+ Greece
-+ Greenland (geo)
-+ Hong Kong (geo)
-+ Hungary
-+ Iceland
-+ India
-+ Ireland
-+ Isle of Man (geo)
-+ Israel
-+ Italy
-+ Japan
-+ Kazakhstan (geo)
-+ Latvia
-+ Liechtenstein (geo)
-+ Lithuania
-+ Luxembourg
-+ Macao (geo)
-+ Macedonia
-+ Malta (geo)
-+ Mexico (geo)
-+ Moldova
-+ Monaco (geo)
-+ Mongolia (geo)
-+ Montenegro (geo)
-+ Morocco (geo)
-+ Netherlands
-+ New Zealand
-+ Nigeria
-+ Norway
-+ Panama (geo)
-+ Philippines (geo)
-+ Poland
-+ Portugal
-+ Qatar (geo)
-+ Romania
-+ Saudi Arabia (geo)
-+ Serbia
-+ Singapore
-+ Slovakia
-+ South Africa
-+ Spain
-+ Sri Lanka (geo)
-+ Sweden
-+ Switzerland
-+ Taiwan
-+ Turkey (geo)
-+ UK London
-+ UK London - Streaming Optimized
-+ UK Manchester
-+ UK Southampton
-+ Ukraine
-+ United Arab Emirates (geo)
-+ US Atlanta
-+ US California
-+ US Chicago
-+ US Denver
-+ US East
-+ US Florida
-+ US Houston
-+ US Las Vegas
-+ US New York
-+ US Seattle
-+ US Silicon Valley
-+ US Texas
-+ US Washington DC
-+ US West
-+ Venezuela (geo)
-+ Vietnam (geo)
-
-Regions marked with (geo) are geo-located. Some of these regions may not available if PIA_PF is set to true.
 
 ## How to deploy
 The image resulting of the Dockerfile in this repo has been published to Docker Hub. There's no need to build the image first.
@@ -196,6 +91,12 @@ build:
 ...in the [docker-compose.yml](docker-compose.yml) file.
 
 Then, you can run: `docker-compose build && docker-compose up -d`
+
+## Access
+
+Navigate to http://localhost:8888 (or the port you have specified). The credentials are as default by qBittorrent:
+* user: admin
+* password: adminadmin
 
 # Thanks
 
