@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  webui:
+    image: javiruizs/qbittorrentpia
+    ports:
+      - "8888:8888"
+    devices:
+      - "/dev/net/tun"
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    volumes:
+      - host_volume:guest_volume
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    environment:
+      - PIA_USER=xxxx
+      - PIA_PASS=xxxx
+      - PIA_DNS=true
+      - PIA_PF=true
+      #- MAX_LATENCY=0.05
+      - AUTOCONNECT=true
+      #- PREFERRED_REGION=Spain
+      - VPN_PROTOCOL=openvpn_udp_standard
+      - DISABLE_IPV6=yes
+      - WEBUI_PORT=8888
+    restart: unless-stopped
+    entrypoint: "/root/scripts/start.sh"
