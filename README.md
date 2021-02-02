@@ -2,7 +2,7 @@
 Docker image that combines qBittorrent and Private Internet Acces (PIA) with port forwarding.
 
 ## Brief descritpion
-This is a simple project. It basically combines the [manual scritps](https://www.privateinternetaccess.com/helpdesk/kb/articles/manual-connection-and-port-forwarding-scripts) ellaborated by PIA and published to [GitHub](https://github.com/pia-foss/manual-connections), with the Ubuntu 20.04 Docker image and the latest available stable qBittorrent release. **For this to work you need an actvie PIA subscription**.
+This is a simple project. It basically combines the [manual scritps](https://www.privateinternetaccess.com/helpdesk/kb/articles/manual-connection-and-port-forwarding-scripts) elaborated by PIA and published to [GitHub](https://github.com/pia-foss/manual-connections), with the Ubuntu 20.04 Docker image and the latest available stable qBittorrent release. **For this to work you need an actvie PIA subscription**.
 
 ## Tested environments
 As of this commit, I've tested this set up on my Windows 10 machine with Docker running on WSL2. It works, yet **only with OpenVPN**. It seems that Wireguard protocol is not supported by the kernel used here.
