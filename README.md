@@ -196,3 +196,11 @@ build:
 ...in the [docker-compose.yml](docker-compose.yml) file.
 
 Then, you can run: `docker-compose build && docker-compose up -d`
+
+# Thanks
+
+If PIA wouldn't have published these scripts, I wouldn't have come up with the whole idea. So, all my thanks and creds to them!
+
+# License
+
+This project is licensed under the MIT (Expat) license, which can be found [here](LICENSE).
