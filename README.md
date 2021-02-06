@@ -5,11 +5,19 @@ Docker image that combines qBittorrent and Private Internet Acces (PIA) with por
 This is a simple project. It basically combines the [manual scritps](https://www.privateinternetaccess.com/helpdesk/kb/articles/manual-connection-and-port-forwarding-scripts) elaborated by PIA and published to [GitHub](https://github.com/pia-foss/manual-connections), with the Ubuntu 20.04 Docker image and the latest available stable qBittorrent release. **For this to work you need an actvie PIA subscription**.
 
 ## Tested environments
-As of this commit, I've tested this set up on my Windows 10 machine with Docker running on WSL2. It works, yet **only with OpenVPN**. It seems that Wireguard protocol is not supported by the kernel used here.
 
-I'm also trying to make it work for the Container Station of my QNAS server. I hope I can get something running sometime soon!
-
-I guess if used in a true Linux host, wireguard will most probably work. I'll make an update on this, too.
+### Windows 10
+* **Environment**: Windows 10 + Docker running on WSL2.
+* **Working protocols**: Only OpenVPN.
+* **Installation**: As described below.
+### QNAS Container Station
+* **Environment**: QTS 4.5.2.
+* **Working protocols**: Only OpenVPN.
+* **Installation**: Manually pulling image and configuring envs, shared drives and permissions. Step-by-step guide will be published.
+### Ubuntu 20.04 LTS
+* **Environment**: VMware. Host: Windows 10. Guest: Ubuntu 20.04 LTS. Host OS with Ubuntu should work equally as good.
+* **Working protocols**: Both OpenVPN and WireGuard.
+* **Installation**: As described below.
 
 ## Versions of elements used in the image
 + manual-connections: [v2.0.0](https://github.com/pia-foss/manual-connections/releases/tag/v2.0.0)
@@ -66,7 +74,7 @@ If you want, you can also change some of the connection behavior through these v
 |PIA_PF|`true` or `false`|Enables/Disables port forwarding|
 |MAX_LATENCY|`float`, in seconds, e.g.: 0.05|Max latency to consider when choosing VPN destination automatically.|
 |AUTOCONNECT|`true` or `false`|If set to true, it "will test for and select the server with the lowest latency" and "will override PREFERRED_REGION".|
-|PREFERRED_REGION|e.g.: Spain|"The region ID for a PIA server." To get a complete list of the available regions, execute the `sudo MAX_LATENCY=10 ./get_region.sh` and you'll get the whole list.|
+|PREFERRED_REGION|e.g.: spain|"The region ID for a PIA server." To get a complete list of the available regions, execute the `sudo MAX_LATENCY=10 ./get_region.sh` and you'll get the whole list.|
 |VPN_PROTOCOL|`wireguard`, `openvpn`, `openvpn_udp_standard`, `openvpn_tcp/udp_standad/strong`|Desired VPN protocol to be used. "openvpn will default to openvpn_udp_standard"|
 |DISABLE_IPV6|`yes` or `no`|Disables/Enables IPv6 connectivity. Either PIA or OpenVPN disencourages the usage of IPv6 to prevent DNS leaking.|
 |WEBUI_PORT|`int`, e.g.: 8888|The port from wich you will access qBittorrent via browser. **IMPORTANT**: If you change this value, you must not forget to change the port mapping on the YML file, as well.|
