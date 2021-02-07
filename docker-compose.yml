@@ -2,11 +2,14 @@ version: "3"
 
 services:
   webui:
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    privileged: true
     image: javiruizs/qbittorrentpia
     ports:
       - "8888:8888"
-    devices:
-      - "/dev/net/tun"
+    # devices:
+    #   - "/dev/net/tun"
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
