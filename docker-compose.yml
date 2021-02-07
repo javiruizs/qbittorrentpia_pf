@@ -4,12 +4,12 @@ services:
   webui:
     stdin_open: true # docker run -i
     tty: true        # docker run -t
-    privileged: true
+    # privileged: true # Risky, just put it here to do some testing
     image: javiruizs/qbittorrentpia
     ports:
       - "8888:8888"
-    # devices:
-    #   - "/dev/net/tun"
+    devices:
+      - "/dev/net/tun"
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
