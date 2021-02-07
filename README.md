@@ -5,11 +5,21 @@ Docker image that combines qBittorrent and Private Internet Acces (PIA) with por
 This is a simple project. It basically combines the [manual scritps](https://www.privateinternetaccess.com/helpdesk/kb/articles/manual-connection-and-port-forwarding-scripts) elaborated by PIA and published to [GitHub](https://github.com/pia-foss/manual-connections), with the Ubuntu 20.04 Docker image and the latest available stable qBittorrent release. **For this to work you need an actvie PIA subscription**.
 
 ## Tested environments
-As of this commit, I've tested this set up on my Windows 10 machine with Docker running on WSL2. It works, yet **only with OpenVPN**. It seems that Wireguard protocol is not supported by the kernel used here.
 
-I'm also trying to make it work for the Container Station of my QNAS server. I hope I can get something running sometime soon!
+### Windows 10
+* **Setup:** Windows 10 + WSL 2 + Docker
+* **Working VPN protocols:** Only OpenVPN.
+* **How to deploy:** As described below.
 
-I guess if used in a true Linux host, wireguard will most probably work. I'll make an update on this, too.
+### Ubuntu 20.04 LTS
+* **Setup:** Ubuntu VM (VMware Player) on a Windows 10 host.
+* **Working VPN protocols:** Both OpenVPN and WireGuard.
+* **How to deploy:** As described below.
+
+### QNAP Container Station
+* **Setup:** QNAP QTS 4.5.2
+* **Working VPN protocols:** Only OpenVPN.
+* **How to deploy:** Working on it. Compose file not working, but manual creation possible.
 
 ## Versions of elements used in the image
 + manual-connections: [v2.0.0](https://github.com/pia-foss/manual-connections/releases/tag/v2.0.0)
@@ -66,18 +76,17 @@ If you want, you can also change some of the connection behavior through these v
 |PIA_PF|`true` or `false`|Enables/Disables port forwarding|
 |MAX_LATENCY|`float`, in seconds, e.g.: 0.05|Max latency to consider when choosing VPN destination automatically.|
 |AUTOCONNECT|`true` or `false`|If set to true, it "will test for and select the server with the lowest latency" and "will override PREFERRED_REGION".|
-|PREFERRED_REGION|e.g.: Spain|"The region ID for a PIA server." To get a complete list of the available regions, execute the `sudo MAX_LATENCY=10 ./get_region.sh` and you'll get the whole list.|
+|PREFERRED_REGION|e.g.: spain|"The region ID for a PIA server." To get a complete list of the available regions, execute the `sudo MAX_LATENCY=10 ./get_region.sh` and you'll get the whole list.|
 |VPN_PROTOCOL|`wireguard`, `openvpn`, `openvpn_udp_standard`, `openvpn_tcp/udp_standad/strong`|Desired VPN protocol to be used. "openvpn will default to openvpn_udp_standard"|
 |DISABLE_IPV6|`yes` or `no`|Disables/Enables IPv6 connectivity. Either PIA or OpenVPN disencourages the usage of IPv6 to prevent DNS leaking.|
 |WEBUI_PORT|`int`, e.g.: 8888|The port from wich you will access qBittorrent via browser. **IMPORTANT**: If you change this value, you must not forget to change the port mapping on the YML file, as well.|
 
-## How to deploy
+## Deploying
 The image resulting of the Dockerfile in this repo has been published to Docker Hub. There's no need to build the image first.
 Clone the repo and modify the compose file with your credentials and according to your preferences.
 Then, simply run `docker-compose up -d`. To remove the app: `docker-compose down`.
 
-## How to build and deploy
-
+## Building and deploying
 If you would rather build the image yourself you simply need to change:
 ```YML
 image: javiruizs/qbittorentpia

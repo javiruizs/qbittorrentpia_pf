@@ -12,7 +12,7 @@ RUN apt update
 RUN apt upgrade -y
 
 # Installing necessary packages so we can add the qbittorrent repo later
-RUN apt install -y openvpn net-tools curl wget jq gnupg
+RUN apt install -y openvpn net-tools curl wget jq gnupg wireguard
 
 # Installing qbittorrent
 RUN echo "deb http://ppa.launchpad.net/qbittorrent-team/qbittorrent-stable/ubuntu focal main" >> /etc/apt/sources.list

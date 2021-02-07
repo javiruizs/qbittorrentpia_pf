@@ -21,7 +21,7 @@ services:
       - PIA_PF=true
       #- MAX_LATENCY=0.05
       #- AUTOCONNECT=true
-      - PREFERRED_REGION=Spain
+      - PREFERRED_REGION=spain
       - VPN_PROTOCOL=openvpn
       - DISABLE_IPV6=yes
       - WEBUI_PORT=8888
