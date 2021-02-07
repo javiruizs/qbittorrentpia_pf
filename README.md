@@ -13,7 +13,7 @@ This is a simple project. It basically combines the [manual scritps](https://www
 
 ### Ubuntu 20.04 LTS
 * **Setup:** Ubuntu VM (VMware Player) on a Windows 10 host.
-* **Working VPN protocols:** Both OpenVPN and WireGuard.
+* **Working VPN protocols:** Both OpenVPN and WireGuard, yet this last one only works if the `--privileged: true` directive is set in the YML file.
 * **How to deploy:** As described below.
 
 ### QNAP Container Station
