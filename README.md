@@ -1,4 +1,4 @@
-# vuvucela-torrencial
+# qBittorrentPIA_PF
 Docker image that combines qBittorrent and Private Internet Acces (PIA) with port forwarding.
 
 ## Brief descritpion
