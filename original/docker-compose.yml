@@ -1,0 +1,34 @@
+version: "3"
+
+services:
+  webui:
+    #privileged: true # Makes all protocols work, yet needed for WireGuard as of now.
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    image: javiruizs/qbittorrentpia
+    ports:
+      - "8888:8888"
+    devices:
+      - "/dev/net/tun" # Required for OpenVPN
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    volumes:
+      - <YOUR VOLUME>:/share/Download
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+      - net.ipv6.conf.all.disable_ipv6=1 # Set to 0 if you want to enable IPv6
+      - net.ipv6.conf.default.disable_ipv6=1 # Set to 0 if you want to enable IPv6
+    environment:
+      - PIA_USER=xxxx
+      - PIA_PASS=xxxx
+      - PIA_DNS=true
+      - PIA_PF=true
+      #- MAX_LATENCY=0.05
+      #- AUTOCONNECT=true
+      - PREFERRED_REGION=spain
+      - VPN_PROTOCOL=openvpn
+      - DISABLE_IPV6=yes
+      - WEBUI_PORT=8888
+    restart: unless-stopped
+    entrypoint: "/root/scripts/start.sh"
